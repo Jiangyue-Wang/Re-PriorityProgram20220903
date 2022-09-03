@@ -1,0 +1,9 @@
+*.Rproj.user
+*.Rhistory
+*.RData
+*.Ruserdata
+*.Rout
+*.zip
+*.Rproj
+AMPHIBIANS.zip
+*.csv.gz
