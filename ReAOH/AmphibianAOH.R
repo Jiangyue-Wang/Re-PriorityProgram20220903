@@ -46,10 +46,11 @@ print(amphi_info_data)
 
 ## Generate area of habitat
 # specify a folder to save area of habitat
-dir.create("ReAOH/AMPHIBIANS")
+# dir.create("ReAOH/AMPHIBIANS")
 output_dir <- "E:/Priority program/Re-PriorityProgram20220903/ReAOH/AMPHIBIANS"
 
 amphi_aoh_data <- create_spp_aoh_data(amphi_info_data, output_dir = output_dir, cache_dir = cache_dir)
+# C:\Users\dell\AppData\Local\Temp\RtmpmQG2fi\raster this is cache directory, clear regularly
 
 
 
