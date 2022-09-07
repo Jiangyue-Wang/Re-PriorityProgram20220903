@@ -38,5 +38,5 @@ print(reptl_info_data)
 # specify a folder to save area of habitat
 # dir.create("ReAOH/REPTILES")
 output_dir <- "E:/Priority program/Re-PriorityProgram20220903/ReAOH/REPTILES"
-
-reptl_aoh_data <- create_spp_aoh_data(reptl_info_data, output_dir = output_dir, cache_dir = cache_dir)
+n_threads <- parallel::detectCores() - 1 
+reptl_aoh_data <- create_spp_aoh_data(reptl_info_data, output_dir = output_dir, cache_dir = cache_dir, n_threads = n_threads)
