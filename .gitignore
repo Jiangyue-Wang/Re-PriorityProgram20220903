@@ -12,5 +12,7 @@ reptiles_hybas_table.zip
 *.csv.gz
 *.Rproj
 *.tif
+*.rds
 
 
+.Rproj.user

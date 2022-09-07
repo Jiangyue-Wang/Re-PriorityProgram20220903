@@ -26,8 +26,8 @@ reptl_range_data <- read_spp_range_data(path)
 print(reptl_range_data)
 
 # create cache directory
-# dir.create("E:/Priority program/Re-PriorityProgram20220903/ReAOH/repcache")
-cache_dir<-"E:/Priority program/Re-PriorityProgram20220903/ReAOH/repcache"
+# dir.create("E:/Priority program/Re-PriorityProgram20220903/ReAOH/cache")
+cache_dir<-"E:/Priority program/Re-PriorityProgram20220903/ReAOH/cache"
 
 # prepare information
 reptl_info_data <- create_spp_info_data(reptl_range_data, cache_dir = cache_dir)

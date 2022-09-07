@@ -51,13 +51,40 @@ output_dir <- "E:/Priority program/Re-PriorityProgram20220903/ReAOH/AMPHIBIANS"
 
 amphi_aoh_data <- create_spp_aoh_data(amphi_info_data, output_dir = output_dir, cache_dir = cache_dir)
 # C:\Users\dell\AppData\Local\Temp\RtmpmQG2fi\raster this is cache directory, clear regularly
+# Remember to set nthreads and cache limit next time
 
+saveRDS(amphi_range_data,"ReAOH/amphi_range_data.rds")
+saveRDS(amphi_info_data,"ReAOH/amphi_info_data.rds")
+saveRDS(amphi_aoh_data,"ReAOH/amphi_aoh_data.rds")
 
+head(amphi_aoh_data)
+head(amphi_range_data)
+head(amphi_info_data)
 
+colnames(amphi_aoh_data)
+amphi_aoh_data$path
+library(dplyr)
+amphi_spp_list <- amphi_aoh_data %>%
+  mutate(filename=paste0(id_no,"_",seasonal)) %>%
+  select(filename,id_no,seasonal,binomial,category,path)
 
+# delete geometry to save space
+amphi_spp_list <- as.data.frame(amphi_spp_list)
+amphi_spp_list<-amphi_spp_list[,-ncol(amphi_spp_list)]
 
+# inspect why only 6771 tifs, but 6989 obs
+nrow(amphi_spp_list[is.na(amphi_spp_list$path),]) #218, just the number difference
+unique(amphi_aoh_data[is.na(amphi_aoh_data$path),]$full_habitat_code) # they lack habitat code, or 18, 14.3, 7.1 14.6, which is not in Lumbierres dataset
 
+#inspect why only 6989 obs in info, but 8861 obs in range
+amphi_range_data[!amphi_range_data$binomial%in%amphi_info_data$binomial,] # only 276
+nrow(amphi_range_data[amphi_range_data$terrestial=="false",]) # only 107
+amphi_range_data[!amphi_range_data$id_no%in%amphi_info_data$id_no,] # still 276
+length(unique(amphi_range_data$id_no)) # 7233
+amphi_range_data[duplicated(amphi_range_data$id_no),] # they have different sources
 
-
-
+# check if old version and current version same
+library(raster)
+plot(raster("E:/Priority program/WJY/AOH/amphibian/FRC_520_1.tif"))
+plot(raster("E:/Priority program/Re-PriorityProgram20220903/ReAOH/AMPHIBIANS/520_1.tif"))
 
