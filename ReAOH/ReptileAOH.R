@@ -29,14 +29,64 @@ print(reptl_range_data)
 # dir.create("E:/Priority program/Re-PriorityProgram20220903/ReAOH/cache")
 cache_dir<-"E:/Priority program/Re-PriorityProgram20220903/ReAOH/cache"
 
-# prepare information
-reptl_info_data <- create_spp_info_data(reptl_range_data, cache_dir = cache_dir)
+#Not enough memory, so split into 14 groups, No.2 on workstation 204
+reptl_range_data1 <- reptl_range_data[1:1000,]
 
-print(reptl_info_data)
+# prepare information
+reptl_info_data1 <- create_spp_info_data(reptl_range_data1, cache_dir = cache_dir)
+
+print(reptl_info_data1)
 
 ## Generate area of habitat
 # specify a folder to save area of habitat
 # dir.create("ReAOH/REPTILES")
 output_dir <- "E:/Priority program/Re-PriorityProgram20220903/ReAOH/REPTILES"
 n_threads <- parallel::detectCores() - 1 
-reptl_aoh_data <- create_spp_aoh_data(reptl_info_data, output_dir = output_dir, cache_dir = cache_dir, n_threads = n_threads)
+reptl_aoh_data1 <- create_spp_aoh_data(reptl_info_data1, output_dir = output_dir, cache_dir = cache_dir, n_threads = n_threads)
+
+saveRDS(reptl_aoh_data1,"E:/Priority program/Re-PriorityProgram20220903/ReAOH/reptl_aoh_data1.rds")
+library(dplyr)
+reptl_spp_list1 <- reptl_aoh_data1 %>%
+  mutate(filename=paste0(id_no,"_",seasonal)) %>%
+  select(filename,id_no,seasonal,binomial,category,path)
+
+# delete geometry to save space
+reptl_spp_list1 <- as.data.frame(reptl_spp_list1)
+reptl_spp_list1<-reptl_spp_list1[,-ncol(reptl_spp_list1)]
+write.csv(reptl_spp_list1,"ReAOH/reptl_spp_list1.csv",row.names=F)
+
+
+# 1000 per group won't blow up the memory
+
+reptl_range_data3 <- reptl_range_data[2001:3000,]
+
+# prepare information
+reptl_info_data3 <- create_spp_info_data(reptl_range_data3, cache_dir = cache_dir)
+
+print(reptl_info_data3)
+
+## Generate area of habitat
+# specify a folder to save area of habitat
+# dir.create("ReAOH/REPTILES")
+output_dir <- "E:/Priority program/Re-PriorityProgram20220903/ReAOH/REPTILES"
+n_threads <- parallel::detectCores() - 1 
+reptl_aoh_data3 <- create_spp_aoh_data(reptl_info_data3, output_dir = output_dir, cache_dir = cache_dir, n_threads = n_threads)
+
+# Error in h(simpleError(msg, call)) : 
+# 在为'mask'函数选择方法时评估'mask'参数出了错: cannot allocate vector of size 143.1 Gb
+#There may be one species that needs much memory, soI checked how much it progresses,last one is 196953_1, it is the 106th row in reptl_info_data, so I will start with 108th, skiiping 107
+
+reptl_info_data3_1 <- reptl_info_data3[108:nrow(reptl_info_data3),]
+reptl_aoh_data3_1 <- create_spp_aoh_data(reptl_info_data3_1, output_dir = output_dir, cache_dir = cache_dir, n_threads = n_threads)
+# It works, so the error one is Nactus pelagicus, 107th of reptl_info_data3, idno 176186, seasonal 1
+saveRDS(reptl_aoh_data3_1,"E:/Priority program/Re-PriorityProgram20220903/ReAOH/reptl_aoh_data3_1.rds")
+library(dplyr)
+reptl_spp_list3_1 <- reptl_aoh_data3_1 %>%
+  mutate(filename=paste0(id_no,"_",seasonal)) %>%
+  select(filename,id_no,seasonal,binomial,category,path)
+
+# delete geometry to save space
+reptl_spp_list3_1 <- as.data.frame(reptl_spp_list3_1)
+reptl_spp_list3_1<-reptl_spp_list3_1[,-ncol(reptl_spp_list3_1)]
+write.csv(reptl_spp_list3_1,"ReAOH/reptl_spp_list3_1.csv",row.names=F)
+
