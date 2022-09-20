@@ -1,9 +1,13 @@
-setwd("G:/Priority program/Re-PriorityProgram20220903/ReAOH")
+setwd("E:/Priority program/Re-PriorityProgram20220903/ReAOH")
 group_generate_aoh <- function(taxa, number1,number2, groupcode){
   require(aoh)
   require(terra)
   require(rappdirs)
   require(dplyr)
+  # set environmental variables
+  Sys.setenv("GDAL_PYTHON" = "python")
+  Sys.setenv("GDAL_CALC" = "C:\\OSGeo4W\\apps\\Python39\\Scripts\\gdal_calc.py")
+  Sys.setenv("GDAL_ESCAPE" = "false")
   rm(spp_range_data)
   rm(spp_info_data)
   rm(spp_aoh_data)

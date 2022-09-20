@@ -89,4 +89,3 @@ reptl_spp_list3_1 <- reptl_aoh_data3_1 %>%
 reptl_spp_list3_1 <- as.data.frame(reptl_spp_list3_1)
 reptl_spp_list3_1<-reptl_spp_list3_1[,-ncol(reptl_spp_list3_1)]
 write.csv(reptl_spp_list3_1,"ReAOH/reptl_spp_list3_1.csv",row.names=F)
-
