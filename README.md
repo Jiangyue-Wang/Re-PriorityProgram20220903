@@ -23,3 +23,8 @@ A lot of problems arise.
 ### Processing mammals whose geometry range covers the narrow NA band in Lumbierres(2021) last edition
 I use the code [MammalAOH_narrow.R](ReAOH/MammalAOH_narrow.R) to generate the AOH of error mammals. The error list is generated in April, 2022, using geometry attribute in MAMMALS.rds sent from Jeff. Hope this will work.
 
+Unfortunately, this ended up with blowing up the memory again. So I just try to run the narrow mammal species one by one using [MammalAOH_OnebyOne.R](ReAOH/MammalAOH_OnebyOne.R). This works! Output species list in mammal_spp_list[ReAOH/mammal_spp_list.csv]
+
+### Rerun narrow reptile species
+Use the code [ReptileAOH_Narrow_OnebyOne.R](ReAOH/ReptileAOH_Narrow_OnebyOne.R) to generate narrow reptile species' AOH, it works well. Output species list in [reptl_spp_list.csv](ReAOH/reptl_spp_list.csv)
+

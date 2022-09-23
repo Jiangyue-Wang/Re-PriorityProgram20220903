@@ -59,3 +59,14 @@ for (i in 51:nrow(spp_info_data)){
   gc()
 }
 
+mammal_aoh_data <- create_spp_aoh_data(spp_info_data,cache_dir = "ReAOH/cache",
+                                       verbose = TRUE,
+                                       output_dir = "ReAOH/MAMMALS")
+saveRDS(mammal_aoh_data,"ReAOH/mammal_aoh_data.rds")
+library(dplyr)
+mammal_spp_list <- mammal_aoh_data %>%
+  mutate(filename=paste0(id_no,"_",seasonal)) %>%
+  select(filename,id_no,seasonal,binomial,category,path)
+mammal_spp_list <- as.data.frame(mammal_spp_list)
+mammal_spp_list<-mammal_spp_list[,-ncol(mammal_spp_list)]
+write.csv(mammal_spp_list,"ReAOH/mammal_spp_list.csv",row.names=F)
