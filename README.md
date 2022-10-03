@@ -20,11 +20,19 @@ A lot of problems arise.
 
 2. We cannot generate reptile's spp_info_data, because this step still needs much memory. So we are trying to split the reptile taxa into a few groups, and process each group one by one. Unfortunately, it still failed to work when there is only one species each group. It's confusing and I don't know what to do.
 
-### Processing mammals whose geometry range covers the narrow NA band in Lumbierres(2021) last edition
+### Rerun the species in errorlist only
+
+#### Processing mammals whose geometry range covers the narrow NA band in Lumbierres(2021) last edition
 I use the code [MammalAOH_narrow.R](ReAOH/MammalAOH_narrow.R) to generate the AOH of error mammals. The error list is generated in April, 2022, using geometry attribute in MAMMALS.rds sent from Jeff. Hope this will work.
 
 Unfortunately, this ended up with blowing up the memory again. So I just try to run the narrow mammal species one by one using [MammalAOH_OnebyOne.R](ReAOH/MammalAOH_OnebyOne.R). This works! Output species list in mammal_spp_list[ReAOH/mammal_spp_list.csv]
 
-### Rerun narrow reptile species
+#### Rerun narrow reptile species
 Use the code [ReptileAOH_Narrow_OnebyOne.R](ReAOH/ReptileAOH_Narrow_OnebyOne.R) to generate narrow reptile species' AOH, it works well. Output species list in [reptl_spp_list.csv](ReAOH/reptl_spp_list.csv)
+
+#### Rerun narrow bird species
+Jeff finished the narrow species list of bird taxa, all files in [aoh_redo_birds](ReAOH/aoh_redo_birds.zip), I cleaned up the [bird_spp_list](ReAOH/bird_spp_list.csv) and modified file path according to [results.rda](ReAOH/aoh-redo-birds/final/results.rda). 
+
+## Reproject and resample the AOH rasters into Mollweide projection and 5 km resolution
+Processing R script is mammal_5km.R[ReProject&Resample/mammal_5km.R], amphibian_5km.R[ReProject&Resample/amphibian_5km.R], reptile_5km.R[ReProject&Resample/reptile_5km.R] and bird_5km.R[ReProject&Resample/bird_5km.R].
 
