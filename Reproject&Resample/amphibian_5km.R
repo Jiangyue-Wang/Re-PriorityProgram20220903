@@ -61,7 +61,7 @@ for(i in 2:length(dir(AMPHIBIANS))){
   rm(SPID)
   gc()
 }
-
+write.csv(SPList,"Reproject&Resample/SPList_amphibian_5km.csv",row.names=F)
 
 
 ### set targets ------------------

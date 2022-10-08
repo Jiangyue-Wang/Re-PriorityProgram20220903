@@ -62,7 +62,7 @@ for(i in 2:length(dir(MAMMALS))){
   }
 
 
-
+write.csv(SPList,"Reproject&Resample/SPList_mammal_5km.csv",row.names=F)
 ### set targets ------------------
 a<-(0.1-1)/(log(250000)-log(1000))
 b<-1-log(1000)*a

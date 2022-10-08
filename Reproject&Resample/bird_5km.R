@@ -60,7 +60,8 @@ for(i in 1:length(dir(BIRDS))){
   rm(SPID)
   gc()
 }
-
+#end at No.26
+write.csv(SPList,"Reproject&Resample/SPList_bird_1to26_5km.csv",row.names=F)
 
 
 ### set targets ------------------
