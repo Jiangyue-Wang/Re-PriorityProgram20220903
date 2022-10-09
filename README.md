@@ -34,5 +34,11 @@ Use the code [ReptileAOH_Narrow_OnebyOne.R](ReAOH/ReptileAOH_Narrow_OnebyOne.R) 
 Jeff finished the narrow species list of bird taxa, all files in [aoh_redo_birds](ReAOH/aoh_redo_birds.zip), I cleaned up the [bird_spp_list](ReAOH/bird_spp_list.csv) and modified file path according to [results.rda](ReAOH/aoh-redo-birds/final/results.rda). 
 
 ## Reproject and resample the AOH rasters into Mollweide projection and 5 km resolution
-Processing R script is mammal_5km.R[ReProject&Resample/mammal_5km.R], amphibian_5km.R[ReProject&Resample/amphibian_5km.R], reptile_5km.R[ReProject&Resample/reptile_5km.R] and bird_5km.R[ReProject&Resample/bird_5km.R].
+Processing R script is [mammal_5km.R](ReProject&Resample/mammal_5km.R), [amphibian_5km.R](ReProject&Resample/amphibian_5km.R), [reptile_5km.R](ReProject&Resample/reptile_5km.R) and [bird_5km_useFunction.R](ReProject&Resample/bird_5km_useFunction.R).
+
+All done! SPList for amphibian, reptile and mammal are generated in the loop, now generate independently for birds: [bird_5km_splist.R](ReProject&Resample/bird_5km_splist.R)
+
+Done!
+
+
 
