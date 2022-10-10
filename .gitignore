@@ -15,6 +15,9 @@ reptiles_hybas_table.zip
 *.rds
 *.rda
 Species_table/
-
-
+rij_mammal.csv
+rij_reptile.csv
+rij_bird.csv
+rij_amphibian.csv
+Vulnerable_C_Total_2018/
 .Rproj.user

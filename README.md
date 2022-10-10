@@ -40,5 +40,22 @@ All done! SPList for amphibian, reptile and mammal are generated in the loop, no
 
 Done!
 
+##Input preparation
+
+### rij matrix
+
+I use former method to generate riij matrix for four taxa. Codes are [rij_amphibian](Input/rij_amphibian.R),[rij_reptile](Input/rij_reptile.R),[rij_bird](Input/rij_bird.R),[rij_mammal](Input/rij_mammal.R). Generated rij matrices are [rij_amphibian](Input/rij_amphibian.csv),[rij_reptile](Input/rij_reptile.csv),[rij_bird](Input/rij_bird.csv),[rij_mammal](Input/rij_mammal.csv).
+
+### Vulnerable carbon total 2018
+
+I downloaded the carbon raster tif from open data of the paper [Mapping the irrecoverable carbon in Earth’s 
+ecosystems](https://zenodo.org/record/4091029#.Y0OGfFJByUk). We use Vulnerable Carbon Total 2018 version.
+
+The crs of raster is WGS84, and the unit is degree. Overall pattern looks like this: ![VulCTotal](Photos/VulCTotal.png)
+
+I will use ArcGIS to reproject it to Mollweide, and then resample to 5 km. Lastly extract with grid_cell points,
+
+
+
 
 
