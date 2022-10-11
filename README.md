@@ -40,7 +40,7 @@ All done! SPList for amphibian, reptile and mammal are generated in the loop, no
 
 Done!
 
-##Input preparation
+## Input preparation
 
 ### rij matrix
 
@@ -53,7 +53,10 @@ ecosystems](https://zenodo.org/record/4091029#.Y0OGfFJByUk). We use Vulnerable C
 
 The crs of raster is WGS84, and the unit is degree. Overall pattern looks like this: ![VulCTotal](Photos/VulCTotal.png)
 
-I will use ArcGIS to reproject it to Mollweide, and then resample to 5 km. Lastly extract with grid_cell points,
+I will use ArcGIS to reproject it to Mollweide, and then resample to 5 km. Lastly extract with grid_cell points. The final output is ![VulCMoll5km](Photos/VulCMoll.png)
+
+## Rerun prioritizr
+
 
 
 
