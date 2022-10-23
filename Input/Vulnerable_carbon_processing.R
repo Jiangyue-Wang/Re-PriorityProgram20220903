@@ -15,6 +15,7 @@ grid_cell <- bind_cols(grid_cell,vulC5km)
 head(grid_cell)
 colnames(grid_cell)[16] <- "VulC"
 # grid_cell <- grid_cell[,-c(8:9)]
+write.csv(grid_cell,"Input/GlobalCells_5km_v221011.csv",row.names=F)
 library(raster)
 plot(rasterFromXYZ(grid_cell[,c("x","y","VulC")]))
 min(grid_cell$VulC[grid_cell$VulC>0],na.rm=T)# minimum non-zero value is 1,largest 228306

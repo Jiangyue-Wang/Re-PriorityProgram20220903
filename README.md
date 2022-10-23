@@ -57,8 +57,15 @@ I will use ArcGIS to reproject it to Mollweide, and then resample to 5 km. Lastl
 
 ## Rerun prioritizr
 
+I use the same settings as last time: no lock out urban, delete Mergus merganser_2 as its AOH too sparse to achieve targets. Codes are [Country scenario 30% area](MainAnalysis/Country30.R), [Country scenario 50% area](MainAnalysis/Country50.R), [Global scenario 30% area](MainAnalysis/Global30.R), [Global scenario 50% area](MainAnalysis/Global50.R). Again I use the [function](MainAnalysis/FUNCTION_Evaluate_species.R) to count how many species have reached targets. I use [previous code](Stats/country&ecoregion.R) to calculate how much area have been protected and selected in each country and ecoregion.
 
+## Dealing with stripes
 
+I use add_shuffle_portfolio to reduce the stripes in country scenario outputs, following Jeff's suggestions. Much better.
+
+## Other problems
+### Budget usage in Global 50 weight0
+This time , Global scenario 50% area 0 weight used up to more tha 90% of the budget, far more than last time (~40%), causing diffrent pattern. I checked the species aoh and all is fine. So I am guessing if prioritizr doesn't mind budget usage as long as it's under the threshold. As to improve computing speed, use much budget at first may help? Now I am generating portfolios for glo50 0weight to see if budget usage varies a lot.
 
 
 
