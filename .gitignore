@@ -11,9 +11,15 @@ MAMMALS.zip
 reptiles_hybas_table.zip
 *.csv.gz
 *.Rproj
-*.tif
+*.RDataTmp
+*.RDataTmp1
+*.RDataTmp2
 *.rds
 *.rda
+*.csv
+*.tif
+*.tif.aux.xml
+*.tif.ovr
 Species_table/
 rij_mammal.csv
 rij_reptile.csv
