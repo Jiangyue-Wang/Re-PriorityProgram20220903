@@ -74,7 +74,7 @@ country_target_5km$area<-c(country_big$area*budget_lw-country_Parea$x,country_bi
 
 #negative country_lower <-0
 country_target_5km[country_target_5km$id%/%1000==2 & country_target_5km$area<0,"area"]<-0
-#negative country_higher <-country area * 2.5%
+#negative country_higher <-country area * BUDGET * 5%
 idlist<-country_target_5km[country_target_5km$id%/%1000==3 & country_target_5km$area<0,"id"]
 country_target_5km[country_target_5km$id %in% idlist,"area"]<-country_big[country_big$country %in% as.integer(idlist%%1000),"area"]*0.025
 
@@ -194,26 +194,29 @@ if(SCENARIO=="Country"){
 }
 
 
-# rare<-SPList[SPList$area<=1000,"rijid"]
-# lockrare<-rij_5km_30_sp[rij_5km_30_sp$species%in%rare,"pu"]
-# lockrare<-unique(lockrare)
 ###solve the problem------
 
 presolve_check(p_5km)#presolve takes a long long time, 30 min or so
 
 for(i in c(1)){
   p_5km_wt <- p_5km %>% add_shuffle_portfolio(number_solutions = 1, threads=28) %>%
-    add_feature_weights(c(i*(nrow(feature_5km_30_sp)-1),rep(1,nrow(feature_5km_30_sp)-1)))
+    add_feature_weights(c(i*(nrow(feature_5km)-1),rep(1,nrow(feature_5km)-1)))
   #solve
   Sys.time()
   s_5km<-solve(p_5km_wt)#>30min to show text
   Sys.time()
   
   s_grid_cell<-grid_cell
-  s_grid_cell[which(s_grid_cell$X%in%s_5km[s_5km$solution_1==1,"id"] & s_grid_cell$PAorKBA==0),"selection"]<-1
+  s_grid_cell[which(s_grid_cell$X%in%s_5km[s_5km$solution_1==1,]$id & s_grid_cell$PAorKBA==0),"selection"]<-1
   s_grid_cell[s_grid_cell$PAorKBA==1,"selection"]<-2
-  s_grid_cell[is.na(s_grid_cell[,"selection"]),"selection"]<-0
+  s_grid_cell[is.na(s_grid_cell$selection),"selection"]<-0
   write.csv(s_grid_cell,paste0("Output_rij_mod/",SCENARIO,"_",BUDGET,"_",i,".csv"),row.names=F)
+  # dir.create("Raster_rij_mod")
+  Mollweide<-"+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+  writeRaster(rasterFromXYZ(s_grid_cell[,c("x","y","selection")]),paste0("Raster_rij_mod/",SCENARIO,"_",BUDGET,"_",i,".tif"),crs=Mollweide)
+  print(sum(s_grid_cell[s_grid_cell$selection!=0,]$area)/allarea)
+  print(sum(s_grid_cell[s_grid_cell$selection==1,]$area)/budget_area_5km)
+  
 }
 
 
