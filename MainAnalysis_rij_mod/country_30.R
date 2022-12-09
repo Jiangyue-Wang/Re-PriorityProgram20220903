@@ -74,7 +74,7 @@ country_target_5km$area<-c(country_big$area*budget_lw-country_Parea$x,country_bi
 
 #negative country_lower <-0
 country_target_5km[country_target_5km$id%/%1000==2 & country_target_5km$area<0,"area"]<-0
-#negative country_higher <-country area * BUDGET * 5%
+#negative country_higher <-country area * 2.5%
 idlist<-country_target_5km[country_target_5km$id%/%1000==3 & country_target_5km$area<0,"id"]
 country_target_5km[country_target_5km$id %in% idlist,"area"]<-country_big[country_big$country %in% as.integer(idlist%%1000),"area"]*0.025
 
@@ -198,7 +198,7 @@ if(SCENARIO=="Country"){
 
 presolve_check(p_5km)#presolve takes a long long time, 30 min or so
 
-for(i in c(1)){
+for(i in c(0.2,0.4,0.6,0.8)){
   p_5km_wt <- p_5km %>% add_shuffle_portfolio(number_solutions = 1, threads=28) %>%
     add_feature_weights(c(i*(nrow(feature_5km)-1),rep(1,nrow(feature_5km)-1)))
   #solve

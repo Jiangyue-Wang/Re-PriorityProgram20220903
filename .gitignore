@@ -20,6 +20,8 @@ reptiles_hybas_table.zip
 *.tif
 *.tif.aux.xml
 *.tif.ovr
+*.rar
+Figure1208/
 Species_table/
 rij_mammal.csv
 rij_reptile.csv
