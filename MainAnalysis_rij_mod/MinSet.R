@@ -6,7 +6,7 @@ gc()
 
 ### parameter setting----------
 BUDGET=50 #or 30
-SCENARIO="Country" #or "Global"
+SCENARIO="Global" #or "Global"
 
 ### load library------
 library(prioritizr)

@@ -198,7 +198,7 @@ if(SCENARIO=="Country"){
 
 presolve_check(p_5km)#presolve takes a long long time, 30 min or so
 
-for(i in c(0.2,0.4,0.6,0.8)){
+for(i in c(0)){
   p_5km_wt <- p_5km %>% add_shuffle_portfolio(number_solutions = 1, threads=28) %>%
     add_feature_weights(c(i*(nrow(feature_5km)-1),rep(1,nrow(feature_5km)-1)))
   #solve

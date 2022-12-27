@@ -7,7 +7,7 @@ gc()
 ### parameter setting----------
 BUDGET=30 #or 30
 SCENARIO="Global" #or "Global"
-
+set.seed(20221227)
 ### load library------
 library(prioritizr)
 library(tidyverse)
@@ -110,9 +110,9 @@ eco_target_5km$name<-eco_target_forname[eco_target_5km$id+1,"ECO_NAME"]
 
 
 ### create carbon feature,target and rij------
-# feature_carbon<-data.frame(id=1,name="VulC",spf=1)
-# rij_carbon<-data.frame(pu=x_5km$id,species=1,amount=x_5km$VulC)
-# target_carbon<-data.frame(feature="VulC",sense="=",target=1,type="relative")
+feature_carbon<-data.frame(id=1,name="VulC",spf=1)
+rij_carbon<-data.frame(pu=x_5km$id,species=1,amount=x_5km$VulC)
+target_carbon<-data.frame(feature="VulC",sense="=",target=1,type="relative")
 
 
 ### create rij,feature and target used for prioritizr problem initiation--------
@@ -124,21 +124,21 @@ SPList$pass_floor <- floor(SPList$target*0.95-SPList$InPA)
 SPList <- SPList[SPList$pass_floor>0,]#14543 obs
 
 feature_5km_sp <- data.frame(id=SPList$rijid,name=SPList$scientific.name,spf=1)
-feature_5km <- feature_5km_sp
+feature_5km <- rbind(feature_carbon,feature_5km_sp)
 
 target_5km_sp <- data.frame(feature=SPList$scientific.name,sense=">=",target=SPList$prop,type="relative")
-target_5km <- target_5km_sp
+target_5km <- rbind(target_carbon,target_5km_sp)
 
 rij_species <- fread("Input/rij_species_221130.csv")
 rij_species <- rij_species %>% filter(amount>0.00001, species%in%feature_5km_sp$id)
-rij_5km <- rij_species %>% filter(!is.na(amount))
+rij_5km <- bind_rows(rij_carbon,rij_species) %>% filter(!is.na(amount))
 length(unique(rij_5km$species))# 14544
 
 ### initiate a problem-------------
 
 
 p_5km<-problem(x = x_5km , feature = feature_5km, cost_column = "UParea", rij = rij_5km) %>%     
-  add_min_set_objective()%>%
+  add_min_shortfall_objective(budget=budget_area_5km)%>%
   add_manual_targets(targets = target_5km) %>%
   add_gurobi_solver(gap = 0.005,time_limit = 60000,threads = 28,numeric_focus = T) %>% 
   add_binary_decisions()
@@ -185,8 +185,8 @@ if(SCENARIO=="Country"){
     #write country area in tmp
     tmp[tmp$pu%in%pulist,"coun_area"]<-grid_cell_UP[which(grid_cell_UP$country==i),"UParea"]
     
-    #add constraints, only higher
-    p_5km<-p_5km %>% add_linear_constraints(threshold=country_target_5km[country_target_5km$id==i+2000,"area"],sense=">=",data=as.vector(tmp$coun_area))
+    #add constraints, lower and higher
+    p_5km<-p_5km %>% add_linear_constraints(threshold=country_target_5km[country_target_5km$id==i+2000,"area"],sense=">=",data=as.vector(tmp$coun_area)) %>% add_linear_constraints(threshold=country_target_5km[country_target_5km$id==i+3000,"area"],sense="<=",data=as.vector(tmp$coun_area))
     
     #to show me how it progress
     print(i)
@@ -198,25 +198,26 @@ if(SCENARIO=="Country"){
 
 presolve_check(p_5km)#presolve takes a long long time, 30 min or so
 
-
-p_5km_wt <- p_5km %>% add_shuffle_portfolio(number_solutions = 1, threads=28)
-#solve
-Sys.time()
-s_5km<-solve(p_5km_wt)#>30min to show text
-Sys.time()
-
-s_grid_cell<-grid_cell
-s_grid_cell[which(s_grid_cell$X%in%s_5km[s_5km$solution_1==1,]$id & s_grid_cell$PAorKBA==0),"selection"]<-1
-s_grid_cell[s_grid_cell$PAorKBA==1,"selection"]<-2
-s_grid_cell[is.na(s_grid_cell$selection),"selection"]<-0
-write.csv(s_grid_cell,paste0("Output_rij_mod/",SCENARIO,"_",BUDGET,"_",0,".csv"),row.names=F)
-# dir.create("Raster_rij_mod")
-Mollweide<-"+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
-writeRaster(rasterFromXYZ(s_grid_cell[,c("x","y","selection")]),paste0("Raster_rij_mod/",SCENARIO,"_",BUDGET,"_",0,".tif"),crs=Mollweide)
-print(sum(s_grid_cell[s_grid_cell$selection!=0,]$area)/allarea)
-print(sum(s_grid_cell[s_grid_cell$selection==1,]$area)/budget_area_5km)
-
-
+for(i in c(0)){
+  p_5km_wt <- p_5km %>% add_shuffle_portfolio(number_solutions = 1, threads=28) %>%
+    add_feature_weights(c(i*(nrow(feature_5km)-1),rep(1,nrow(feature_5km)-1))) %>%
+    add_linear_constraint(threshold=budget_lw, sense=">=",data=x_5km$UParea)
+  #solve
+  Sys.time()
+  s_5km<-solve(p_5km_wt)#>30min to show text
+  Sys.time()
+  
+  s_grid_cell<-grid_cell
+  s_grid_cell[which(s_grid_cell$X%in%s_5km[s_5km$solution_1==1,]$id & s_grid_cell$PAorKBA==0),"selection"]<-1
+  s_grid_cell[s_grid_cell$PAorKBA==1,"selection"]<-2
+  s_grid_cell[is.na(s_grid_cell$selection),"selection"]<-0
+  write.csv(s_grid_cell,paste0("Output_rij_mod/",SCENARIO,"_",BUDGET,"_",i,".csv"),row.names=F)
+  Mollweide<-"+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
+  writeRaster(rasterFromXYZ(s_grid_cell[,c("x","y","selection")]),paste0("Raster_rij_mod/",SCENARIO,"_",BUDGET,"_",i,".tif"),crs=Mollweide,overwrite=TRUE)
+  print(sum(s_grid_cell[s_grid_cell$selection!=0,]$area)/allarea)
+  print(sum(s_grid_cell[s_grid_cell$selection==1,]$area)/budget_area_5km)
+  
+}
 
 
 

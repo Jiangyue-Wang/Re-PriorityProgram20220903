@@ -13,7 +13,7 @@ country_stat$KBAoutPAprop<-country_stat$KBAoutPA/country_stat$Area
 
 
 
-sfile<-dir("Output_rij_mod")[1:4]
+sfile<-dir("Output_rij_mod")[c(6,12,18,24)]
 
 library(stringr)
 for(i in 1:4){

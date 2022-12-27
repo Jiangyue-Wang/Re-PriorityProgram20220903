@@ -1,0 +1,16 @@
+rm(list=ls())
+gc()
+sppa <- read.csv("Stats/SPList_PAcoverage.csv")
+summary(sppa$PAselect)
+nrow(sppa[sppa$PAselect>=sppa$target*0.95&sppa$category%in%c("VU","EN","CR"),])/nrow(sppa[sppa$category%in%c("VU","EN","CR"),])
+nrow(sppa[sppa$PAselect>=sppa$target*0.95&sppa$taxa=="mammal"&sppa$category%in%c("VU","EN","CR"),])/nrow(sppa[sppa$taxa=="mammal"&sppa$category%in%c("VU","EN","CR"),])
+nrow(sppa[sppa$PAselect>=sppa$target*0.95&sppa$taxa=="bird"&sppa$category%in%c("VU","EN","CR"),])/nrow(sppa[sppa$taxa=="bird"&sppa$category%in%c("VU","EN","CR"),])
+nrow(sppa[sppa$PAselect>=sppa$target*0.95&sppa$taxa=="reptile"&sppa$category%in%c("VU","EN","CR"),])/nrow(sppa[sppa$taxa=="reptile"&sppa$category%in%c("VU","EN","CR"),])
+nrow(sppa[sppa$PAselect>=sppa$target*0.95&sppa$taxa=="amphibian"&sppa$category%in%c("VU","EN","CR"),])/nrow(sppa[sppa$taxa=="amphibian"&sppa$category%in%c("VU","EN","CR"),])
+
+
+nrow(sppa[sppa$PAselect>=sppa$target*0.95,])/nrow(sppa)
+nrow(sppa[sppa$PAselect>=sppa$target*0.95&sppa$taxa=="mammal",])/nrow(sppa[sppa$taxa=="mammal",])
+nrow(sppa[sppa$PAselect>=sppa$target*0.95&sppa$taxa=="bird",])/nrow(sppa[sppa$taxa=="bird",])
+nrow(sppa[sppa$PAselect>=sppa$target*0.95&sppa$taxa=="reptile",])/nrow(sppa[sppa$taxa=="reptile",])
+nrow(sppa[sppa$PAselect>=sppa$target*0.95&sppa$taxa=="amphibian",])/nrow(sppa[sppa$taxa=="amphibian",])

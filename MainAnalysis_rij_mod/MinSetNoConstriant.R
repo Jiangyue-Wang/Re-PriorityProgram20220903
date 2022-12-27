@@ -5,8 +5,8 @@ rm(list=ls())
 gc()
 
 ### parameter setting----------
-BUDGET=30 #or 30
-SCENARIO="Country" #or "Global"
+BUDGET=50 #or 30
+SCENARIO="Global" #or "Global"
 
 ### load library------
 library(prioritizr)
@@ -146,28 +146,28 @@ p_5km<-problem(x = x_5km , feature = feature_5km, cost_column = "UParea", rij = 
 
 
 
-###add ecoregion constraints---------
-
-for(i in unique(eco_target_5km$id)){
-  rm(tmp)
-  rm(pulist)
-  gc()
-  
-  #create a tmp dataframe to show each ecoregion's distribution
-  tmp<-data.frame(pu=as.integer(x_5km$id),eco_area=0)
-  
-  #pulist is the row id of each ecoregion
-  pulist<-grid_cell_UP[which(grid_cell_UP$ecoregion==i),]$X
-  
-  #write ecoregion area in tmp
-  tmp[tmp$pu%in%pulist,"eco_area"]<-grid_cell_UP[which(grid_cell_UP$ecoregion==i),"UParea"]
-  
-  #add constraints
-  p_5km<-p_5km %>% add_linear_constraints(threshold=eco_target_5km[eco_target_5km$id==i,"area"],sense=">=",data=as.vector(tmp$eco_area))
-  
-  #to show me how it progress
-  print(i)
-}
+# ###add ecoregion constraints---------
+# 
+# for(i in unique(eco_target_5km$id)){
+#   rm(tmp)
+#   rm(pulist)
+#   gc()
+#   
+#   #create a tmp dataframe to show each ecoregion's distribution
+#   tmp<-data.frame(pu=as.integer(x_5km$id),eco_area=0)
+#   
+#   #pulist is the row id of each ecoregion
+#   pulist<-grid_cell_UP[which(grid_cell_UP$ecoregion==i),]$X
+#   
+#   #write ecoregion area in tmp
+#   tmp[tmp$pu%in%pulist,"eco_area"]<-grid_cell_UP[which(grid_cell_UP$ecoregion==i),"UParea"]
+#   
+#   #add constraints
+#   p_5km<-p_5km %>% add_linear_constraints(threshold=eco_target_5km[eco_target_5km$id==i,"area"],sense=">=",data=as.vector(tmp$eco_area))
+#   
+#   #to show me how it progress
+#   print(i)
+# }
 
 ###add country constraints-----------
 if(SCENARIO=="Country"){
@@ -185,7 +185,7 @@ if(SCENARIO=="Country"){
     #write country area in tmp
     tmp[tmp$pu%in%pulist,"coun_area"]<-grid_cell_UP[which(grid_cell_UP$country==i),"UParea"]
     
-    #add constraints, only lower
+    #add constraints, only higher
     p_5km<-p_5km %>% add_linear_constraints(threshold=country_target_5km[country_target_5km$id==i+2000,"area"],sense=">=",data=as.vector(tmp$coun_area))
     
     #to show me how it progress
@@ -204,18 +204,18 @@ p_5km_wt <- p_5km %>% add_shuffle_portfolio(number_solutions = 1, threads=28)
 Sys.time()
 s_5km<-solve(p_5km_wt)#>30min to show text
 Sys.time()
-  
+
 s_grid_cell<-grid_cell
 s_grid_cell[which(s_grid_cell$X%in%s_5km[s_5km$solution_1==1,]$id & s_grid_cell$PAorKBA==0),"selection"]<-1
 s_grid_cell[s_grid_cell$PAorKBA==1,"selection"]<-2
 s_grid_cell[is.na(s_grid_cell$selection),"selection"]<-0
-write.csv(s_grid_cell,paste0("Output_rij_mod/",SCENARIO,"_",BUDGET,"_",0,".csv"),row.names=F)
-  # dir.create("Raster_rij_mod")
+write.csv(s_grid_cell,paste0("Output_rij_mod_MinSet/","MinSetNoConstraint",".csv"),row.names=F)
+# dir.create("Raster_rij_mod")
 Mollweide<-"+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
-writeRaster(rasterFromXYZ(s_grid_cell[,c("x","y","selection")]),paste0("Raster_rij_mod/",SCENARIO,"_",BUDGET,"_",0,".tif"),crs=Mollweide)
+writeRaster(rasterFromXYZ(s_grid_cell[,c("x","y","selection")]),paste0("Raster_rij_mod/","MinSetNoConstraint",".tif"),crs=Mollweide)
 print(sum(s_grid_cell[s_grid_cell$selection!=0,]$area)/allarea)
 print(sum(s_grid_cell[s_grid_cell$selection==1,]$area)/budget_area_5km)
-  
+
 
 
 

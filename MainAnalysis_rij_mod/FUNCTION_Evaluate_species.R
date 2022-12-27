@@ -30,8 +30,8 @@ SpeciesEvaluate<-function(filename){
   
   fourlist[fourlist$select>=fourlist$pass_floor,"Reached"]<-1
   fourlist[fourlist$select<fourlist$pass_floor,"Reached"]<-0
-  fourlist$gap_floor<-floor(fourlist$target-fourlist$InPA)
-  fourlist[fourlist$gap_floor<=0,"Reached"]<-2
+  # fourlist$gap_floor<-floor(fourlist$target-fourlist$InPA)
+  fourlist[fourlist$pass_floor<=0,"Reached"]<-2
   # print(paste(nrow(fourlist[fourlist$Reached==0,]),"unreached species"))
   write.csv(fourlist,paste("Output_rij_mod/SPlist_all_",name,"_",weight,sep=""),row.names=F)
   print("Output done")
