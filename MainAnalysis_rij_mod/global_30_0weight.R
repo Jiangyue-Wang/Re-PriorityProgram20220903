@@ -7,7 +7,7 @@ gc()
 ### parameter setting----------
 BUDGET=30 #or 30
 SCENARIO="Global" #or "Global"
-set.seed(20221227)
+
 ### load library------
 library(prioritizr)
 library(tidyverse)
@@ -200,8 +200,7 @@ presolve_check(p_5km)#presolve takes a long long time, 30 min or so
 
 for(i in c(0)){
   p_5km_wt <- p_5km %>% add_shuffle_portfolio(number_solutions = 1, threads=28) %>%
-    add_feature_weights(c(i*(nrow(feature_5km)-1),rep(1,nrow(feature_5km)-1))) %>%
-    add_linear_constraint(threshold=budget_lw, sense=">=",data=x_5km$UParea)
+    add_feature_weights(c(i*(nrow(feature_5km)-1),rep(1,nrow(feature_5km)-1)))
   #solve
   Sys.time()
   s_5km<-solve(p_5km_wt)#>30min to show text
@@ -211,6 +210,17 @@ for(i in c(0)){
   s_grid_cell[which(s_grid_cell$X%in%s_5km[s_5km$solution_1==1,]$id & s_grid_cell$PAorKBA==0),"selection"]<-1
   s_grid_cell[s_grid_cell$PAorKBA==1,"selection"]<-2
   s_grid_cell[is.na(s_grid_cell$selection),"selection"]<-0
+  
+  # make area usage identical to corresponding country scenario
+  usage_country <- fread(paste0("Output_rij_mod/","Country","_",BUDGET,"_",i,".csv")) %>%
+    filter(selection==1) %>% nrow()
+  usage_diff <- usage_country-nrow(s_grid_cell[s_grid_cell$selection==1,])
+  if(usage_diff>0){
+    set.seed(20221227)
+    s_grid_cell[s_grid_cell$X%in%sample(s_grid_cell$X[s_grid_cell$selection==0],usage_diff),"selection"]<-1
+  }
+  
+  # output file
   write.csv(s_grid_cell,paste0("Output_rij_mod/",SCENARIO,"_",BUDGET,"_",i,".csv"),row.names=F)
   Mollweide<-"+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs"
   writeRaster(rasterFromXYZ(s_grid_cell[,c("x","y","selection")]),paste0("Raster_rij_mod/",SCENARIO,"_",BUDGET,"_",i,".tif"),crs=Mollweide,overwrite=TRUE)
